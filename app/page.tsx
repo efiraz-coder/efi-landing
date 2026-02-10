@@ -1,6 +1,5 @@
 "use client";
 
-import { ContentProvider } from "@/lib/ContentContext";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
@@ -11,7 +10,7 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <ContentProvider>
+    <>
       <Navbar />
       <main>
         <Hero />
@@ -21,6 +20,6 @@ export default function Home() {
         <ContactCTA />
       </main>
       <Footer />
-    </ContentProvider>
+    </>
   );
 }

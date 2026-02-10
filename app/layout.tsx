@@ -11,7 +11,7 @@ const rubik = Rubik({
 export const metadata: Metadata = {
   title: "אפי רוזנברג | מאמן פסיכולוגי, עסקי ויועץ כלכלי",
   description:
-    "גלה את הפוטנציאל שלך עם אימון פסיכולוגי ועסקי מותאם אישית. אפי רוזנברג מלווה אותך להצלחה בחיים האישיים והעסקיים.",
+    "גלה את הפוטנציאל שלך עם שיטת ליווי ייחודית שמשלבת כלים פסיכולוגיים, אסטרטגיה עסקית ותכנון כלכלי. לבעלי עסקים ואנשים שרוצים שינוי אמיתי.",
   keywords: [
     "מאמן פסיכולוגי",
     "אימון עסקי",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "אפי רוזנברג | מאמן פסיכולוגי, עסקי ויועץ כלכלי",
     description:
-      "גלה את הפוטנציאל שלך עם אימון פסיכולוגי ועסקי מותאם אישית.",
+      "שיטת ליווי ייחודית שמשלבת כלים פסיכולוגיים, אסטרטגיה עסקית ותכנון כלכלי.",
     url: "https://efiraz.co.il",
     siteName: "אפי רוזנברג",
     locale: "he_IL",
@@ -39,20 +39,6 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl" className={rubik.variable} suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var theme = localStorage.getItem('theme');
-                  if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                    document.documentElement.classList.add('dark');
-                  }
-                } catch(e) {}
-              })();
-            `,
-          }}
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -73,7 +59,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-rubik antialiased min-h-screen bg-[var(--background)] text-[var(--foreground)]">
+      <body className="font-rubik antialiased min-h-screen bg-[#0a0a0f] text-gray-100">
         {children}
       </body>
     </html>

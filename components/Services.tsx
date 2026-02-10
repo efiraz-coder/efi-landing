@@ -1,106 +1,108 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Brain, Briefcase, PiggyBank } from "lucide-react";
-import { useContent } from "@/lib/ContentContext";
+import { Brain, TrendingUp, PiggyBank, ArrowLeft } from "lucide-react";
 
-const SERVICE_STYLES = [
+const SERVICES = [
   {
     icon: Brain,
-    color: "from-blue-500 to-indigo-600",
-    bgLight: "bg-blue-50 dark:bg-blue-950/30",
+    emoji: "🧠",
+    title: "אימון פסיכולוגי",
+    description:
+      "פיתוח חוסן נפשי, ניהול רגשות, ביטחון עצמי והתמודדות עם חרדות. שיטות מבוססות מחקר שעובדות.",
+    gradient: "from-purple-500/20 to-blue-500/20",
+    borderHover: "hover:border-purple-500/30",
+    iconColor: "text-purple-400",
   },
   {
-    icon: Briefcase,
-    color: "from-brand-gold to-amber-600",
-    bgLight: "bg-amber-50 dark:bg-amber-950/30",
+    icon: TrendingUp,
+    emoji: "📈",
+    title: "אימון עסקי",
+    description:
+      "בניית אסטרטגיה, פיתוח מנהיגות, שיפור ביצועים וצמיחה עסקית. מהחזון למציאות.",
+    gradient: "from-blue-500/20 to-cyan-500/20",
+    borderHover: "hover:border-blue-500/30",
+    iconColor: "text-blue-400",
   },
   {
     icon: PiggyBank,
-    color: "from-emerald-500 to-teal-600",
-    bgLight: "bg-emerald-50 dark:bg-emerald-950/30",
+    emoji: "💰",
+    title: "ייעוץ כלכלי",
+    description:
+      "תכנון פיננסי, ניהול תקציב, השקעות חכמות ובניית עתיד כלכלי יציב ובטוח.",
+    gradient: "from-amber-500/20 to-yellow-500/20",
+    borderHover: "hover:border-amber-500/30",
+    iconColor: "text-amber-400",
   },
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.15 } },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
-};
-
 export default function Services() {
-  const { services } = useContent();
-
   return (
-    <section id="services" className="section-padding">
-      <div className="max-w-7xl mx-auto">
+    <section id="services" className="section-padding relative noise">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-500/3 to-transparent pointer-events-none" />
+
+      <div className="relative z-10 max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block px-4 py-1.5 rounded-full bg-brand-gold/10 text-brand-gold-dark dark:text-brand-gold text-sm font-medium mb-4"
+            className="inline-block px-4 py-1.5 rounded-full bg-white/5 text-amber-400/80 text-sm font-medium border border-amber-400/15"
           >
-            {services.badge}
+            השירותים שלי
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-3xl md:text-4xl font-bold text-[var(--foreground)]"
+            className="mt-4 text-3xl md:text-4xl font-bold text-white"
           >
-            {services.title}
+            איך אני יכול לעזור לך?
           </motion.h2>
         </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          className="grid md:grid-cols-3 gap-6 lg:gap-8"
-        >
-          {services.items.map((service, i) => {
-            const style = SERVICE_STYLES[i] || SERVICE_STYLES[0];
-            const Icon = style.icon;
-            return (
-              <motion.div
-                key={i}
-                variants={cardVariants}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className={`group relative rounded-3xl p-8 ${style.bgLight} border border-[var(--border)] hover:shadow-glass-lg transition-all duration-300 cursor-default`}
-              >
-                <div
-                  className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${style.color} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}
-                >
-                  <Icon className="w-7 h-7 text-white" />
+        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+          {SERVICES.map((service, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15, duration: 0.5 }}
+              whileHover={{ y: -6 }}
+              className={`relative card-dark rounded-3xl p-8 ${service.borderHover} transition-all duration-300 group cursor-default overflow-hidden`}
+            >
+              {/* Background gradient on hover */}
+              <div
+                className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl`}
+              />
+
+              <div className="relative z-10">
+                {/* Emoji + Icon */}
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="text-3xl">{service.emoji}</span>
+                  <service.icon className={`w-6 h-6 ${service.iconColor}`} />
                 </div>
 
-                <h3 className="text-xl font-bold mb-3 text-[var(--foreground)]">
+                <h3 className="text-xl font-bold text-white mb-3">
                   {service.title}
                 </h3>
-                <p className="text-[var(--muted-foreground)] leading-relaxed text-sm">
+                <p className="text-gray-400 text-sm leading-relaxed mb-6">
                   {service.description}
                 </p>
 
                 <a
                   href="#contact"
-                  className="inline-flex items-center mt-6 text-sm font-semibold text-brand-blue hover:text-brand-blue-dark transition-colors"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
                 >
                   למידע נוסף
-                  <span className="mr-2 group-hover:translate-x-[-4px] transition-transform">
-                    &larr;
-                  </span>
+                  <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                 </a>
-              </motion.div>
-            );
-          })}
-        </motion.div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -1,89 +1,69 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
-import { Award, Users, TrendingUp } from "lucide-react";
-import { useContent } from "@/lib/ContentContext";
+import { Target, Heart, TrendingUp } from "lucide-react";
 
-const STAT_ICONS = [Users, Award, TrendingUp];
+const HIGHLIGHTS = [
+  {
+    icon: Heart,
+    title: "גישה אישית",
+    text: "כל תהליך מותאם אישית, עם הקשבה עמוקה לצרכים ולמטרות שלך",
+  },
+  {
+    icon: Target,
+    title: "מיקוד בתוצאות",
+    text: "מתודולוגיה מבוססת מחקר שמובילה לשינוי מדיד ומהיר",
+  },
+  {
+    icon: TrendingUp,
+    title: "צמיחה מתמדת",
+    text: "ליווי מקצועי שמוביל להתפתחות בכל תחומי החיים",
+  },
+];
 
 export default function About() {
-  const { about } = useContent();
-
   return (
-    <section id="about" className="section-padding bg-[var(--muted)]">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Image */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7 }}
-            className="relative order-1 md:order-2"
-          >
-            <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-glass-lg">
-              {about.profileImage.startsWith("http") ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={about.profileImage}
-                  alt={about.title}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <Image
-                  src={about.profileImage}
-                  alt={about.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-              )}
-            </div>
-            <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-2xl bg-brand-gold/20 -z-10" />
-            <div className="absolute -top-4 -left-4 w-16 h-16 rounded-full bg-brand-blue/20 -z-10" />
-          </motion.div>
+    <section id="about" className="section-padding relative noise">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-600/3 to-transparent pointer-events-none" />
 
-          {/* Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7 }}
-            className="order-2 md:order-1"
+      <div className="relative z-10 max-w-6xl mx-auto">
+        <div className="text-center mb-16">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-block px-4 py-1.5 rounded-full bg-white/5 text-gray-400 text-sm font-medium border border-white/8"
           >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-blue/10 text-brand-blue text-sm font-medium mb-4">
-              אודות
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[var(--foreground)]">
-              {about.title}
-            </h2>
-            <div className="space-y-4 text-[var(--muted-foreground)] leading-relaxed">
-              <p>{about.paragraph1}</p>
-              <p>{about.paragraph2}</p>
-            </div>
+            אודות
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="mt-4 text-3xl md:text-4xl font-bold text-white"
+          >
+            למה לבחור בי?
+          </motion.h2>
+        </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 mt-8">
-              {about.stats.map((stat, i) => {
-                const Icon = STAT_ICONS[i] || Users;
-                return (
-                  <div
-                    key={i}
-                    className="text-center p-4 rounded-2xl bg-[var(--card)] shadow-glass"
-                  >
-                    <Icon className="w-6 h-6 text-brand-blue mx-auto mb-2" />
-                    <div className="text-2xl font-bold text-brand-blue">
-                      {stat.value}
-                    </div>
-                    <div className="text-xs text-[var(--muted-foreground)] mt-1">
-                      {stat.label}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </motion.div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {HIGHLIGHTS.map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15 }}
+              className="card-dark rounded-2xl p-8 text-center hover:border-white/10 transition-all duration-300 group"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-5 group-hover:bg-blue-600/10 transition-colors duration-300">
+                <item.icon className="w-7 h-7 text-blue-400" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-3">{item.title}</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">{item.text}</p>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

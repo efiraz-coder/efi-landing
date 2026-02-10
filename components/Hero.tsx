@@ -1,110 +1,119 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useContent } from "@/lib/ContentContext";
+import { Check, GraduationCap } from "lucide-react";
 
 export default function Hero() {
-  const { hero } = useContent();
-
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Video Background */}
-      {hero.heroVideo && (
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster={hero.heroImage}
-          className="absolute inset-0 w-full h-full object-cover hidden md:block"
-        >
-          <source src={hero.heroVideo} type="video/mp4" />
-        </video>
-      )}
-
-      {/* Fallback image for mobile / no-video */}
-      <div
-        className="absolute inset-0 bg-cover bg-center md:hidden"
-        style={{ backgroundImage: `url(${hero.heroImage})` }}
-      />
-
-      {/* If no video, show image on desktop too */}
-      {!hero.heroVideo && (
-        <div
-          className="absolute inset-0 bg-cover bg-center hidden md:block"
-          style={{ backgroundImage: `url(${hero.heroImage})` }}
-        />
-      )}
-
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80" />
+    <section
+      id="hero"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden noise"
+    >
+      {/* Background gradient orbs */}
+      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-blue-600/8 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-amber-500/6 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          <span className="inline-block px-4 py-1.5 rounded-full bg-brand-gold/20 text-brand-gold-light text-sm font-medium mb-6 backdrop-blur-sm border border-brand-gold/30">
-            {hero.badge}
-          </span>
-        </motion.div>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6"
-        >
-          {hero.title1}
-          <br />
-          <span className="text-brand-gold">{hero.title2}</span>
-          <br />
-          {hero.title3}
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-          className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 leading-relaxed"
-        >
-          {hero.subtitle}
-        </motion.p>
-
+        {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          transition={{ duration: 0.6 }}
+        >
+          <span className="inline-block px-5 py-2 rounded-full bg-white/5 text-amber-400/90 text-sm font-medium border border-amber-400/20 backdrop-blur-sm">
+            מאמן פסיכולוגי, עסקי וייעוץ כלכלי
+          </span>
+        </motion.div>
+
+        {/* Sub-heading */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="mt-8 text-gray-400 text-base md:text-lg font-medium"
+        >
+          לבעלי עסקים ואנשים שרוצים שינוי אמיתי
+        </motion.p>
+
+        {/* Main Title - gradient */}
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.3 }}
+          className="mt-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight"
+        >
+          <span className="gradient-text">גלה את הפוטנציאל שלך</span>
+        </motion.h1>
+
+        {/* Description */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="mt-6 text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed"
+        >
+          שיטת ליווי ייחודית שמשלבת כלים פסיכולוגיים, אסטרטגיה עסקית ותכנון כלכלי
+        </motion.p>
+
+        {/* CTA Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.65 }}
+          className="mt-10"
         >
           <a
             href="#contact"
-            className="px-8 py-4 rounded-2xl bg-brand-blue text-white text-lg font-bold shadow-lg hover:bg-brand-blue-dark hover:shadow-xl transition-all duration-300 hover:scale-105"
+            className="inline-block px-10 py-4 rounded-2xl bg-blue-600 text-white text-lg font-bold shadow-xl shadow-blue-600/25 hover:bg-blue-500 hover:shadow-blue-500/30 hover:scale-105 transition-all duration-300"
           >
-            {hero.ctaPrimary}
+            קבע שיחת היכרות חינם
           </a>
-          <a
-            href="#services"
-            className="px-8 py-4 rounded-2xl bg-white/10 text-white text-lg font-medium backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300"
-          >
-            {hero.ctaSecondary}
-          </a>
+        </motion.div>
+
+        {/* Trust line */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.85 }}
+          className="mt-4 text-gray-500 text-sm"
+        >
+          ללא התחייבות • 30 דקות בזום/טלפון
+        </motion.p>
+
+        {/* Trust badges */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1 }}
+          className="mt-10 flex items-center justify-center gap-6 sm:gap-10"
+        >
+          <div className="flex items-center gap-2 text-gray-400">
+            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+              <Check className="w-4 h-4 text-green-400" />
+            </div>
+            <span className="text-sm font-medium">מאות שעות אימון</span>
+          </div>
+          <div className="flex items-center gap-2 text-gray-400">
+            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+              <GraduationCap className="w-4 h-4 text-blue-400" />
+            </div>
+            <span className="text-sm font-medium">תואר שני</span>
+          </div>
         </motion.div>
 
         {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
+          transition={{ delay: 1.5 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
         >
-          <div className="w-6 h-10 rounded-full border-2 border-white/40 flex justify-center pt-2">
+          <div className="w-5 h-9 rounded-full border border-white/15 flex justify-center pt-2">
             <motion.div
-              animate={{ y: [0, 12, 0] }}
+              animate={{ y: [0, 10, 0] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
-              className="w-1.5 h-1.5 rounded-full bg-white/60"
+              className="w-1 h-1 rounded-full bg-white/30"
             />
           </div>
         </motion.div>

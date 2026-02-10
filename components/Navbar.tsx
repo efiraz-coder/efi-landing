@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
-import DarkModeToggle from "./DarkModeToggle";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -18,7 +17,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -26,20 +25,18 @@ export default function Navbar() {
   return (
     <nav
       className={cn(
-        "fixed top-0 right-0 left-0 z-50 transition-all duration-300",
+        "fixed top-0 right-0 left-0 z-50 transition-all duration-500",
         scrolled
-          ? "bg-[var(--background)]/95 backdrop-blur-md shadow-glass border-b border-[var(--border)]"
+          ? "bg-[#0a0a0f]/90 backdrop-blur-xl border-b border-white/5"
           : "bg-transparent"
       )}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <a href="#hero" className="text-xl md:text-2xl font-bold">
-            <span className="text-brand-blue">אפי</span>{" "}
-            <span className={scrolled ? "text-[var(--foreground)]" : "text-white"}>
-              רוזנברג
-            </span>
+          <a href="#hero" className="text-xl md:text-2xl font-bold tracking-tight">
+            <span className="gradient-gold">אפי</span>{" "}
+            <span className="text-white">רוזנברג</span>
           </a>
 
           {/* Desktop Nav */}
@@ -48,51 +45,39 @@ export default function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className={cn(
-                  "px-4 py-2 rounded-xl text-sm font-medium transition-colors",
-                  scrolled
-                    ? "text-[var(--foreground)] hover:bg-[var(--muted)]"
-                    : "text-white/90 hover:text-white hover:bg-white/10"
-                )}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200"
               >
                 {link.label}
               </a>
             ))}
-            <DarkModeToggle />
             <a
               href="#contact"
-              className="mr-2 px-5 py-2.5 rounded-xl bg-brand-blue text-white text-sm font-semibold hover:bg-brand-blue-dark transition-colors shadow-md"
+              className="mr-3 px-5 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-500 transition-all duration-200 shadow-lg shadow-blue-600/20"
             >
-              שיחה חינם
+              שיחת היכרות
             </a>
           </div>
 
-          {/* Mobile buttons */}
-          <div className="flex md:hidden items-center gap-2">
-            <DarkModeToggle />
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className={cn(
-                "p-2 rounded-xl transition-colors",
-                scrolled ? "text-[var(--foreground)]" : "text-white"
-              )}
-            >
-              {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
+          {/* Mobile */}
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="md:hidden p-2 rounded-lg text-gray-400 hover:text-white transition-colors"
+          >
+            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-[var(--background)] border-t border-[var(--border)] shadow-glass-lg animate-fade-in">
+        <div className="md:hidden bg-[#0a0a0f]/98 backdrop-blur-xl border-t border-white/5 animate-fade-in">
           <div className="px-4 py-4 space-y-1">
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="block px-4 py-3 rounded-xl text-sm font-medium text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors"
+                className="block px-4 py-3 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
               >
                 {link.label}
               </a>
@@ -100,9 +85,9 @@ export default function Navbar() {
             <a
               href="#contact"
               onClick={() => setMobileOpen(false)}
-              className="block mt-2 px-4 py-3 rounded-xl bg-brand-blue text-white text-sm font-semibold text-center hover:bg-brand-blue-dark transition-colors"
+              className="block mt-3 px-4 py-3 rounded-xl bg-blue-600 text-white text-sm font-semibold text-center"
             >
-              קבע שיחה חינם
+              שיחת היכרות
             </a>
           </div>
         </div>
