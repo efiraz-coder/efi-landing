@@ -83,16 +83,19 @@ export default function AdminPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-password": storedPass.current,
+          "x-admin-password": storedPass.current.trim(),
         },
         body: JSON.stringify(content),
       });
       if (res.ok) {
         setSaveStatus("saved");
       } else {
+        const err = await res.json().catch(() => ({}));
+        console.error("Save failed:", res.status, err);
         setSaveStatus("error");
       }
-    } catch {
+    } catch (e) {
+      console.error("Save error:", e);
       setSaveStatus("error");
     }
     setTimeout(() => setSaveStatus("idle"), 3000);

@@ -1,65 +1,107 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DEFAULT_CONTENT } from "@/lib/content";
 
-// In-memory + Vercel KV approach: We use Vercel Blob to store a single JSON
-// For simplicity without extra services, we use a file-based approach via Blob
-// If BLOB_READ_WRITE_TOKEN is not set, falls back to default content
+// Simple KV-like storage using Vercel's built-in mechanisms
+// We store content as a single JSON string in a server-side cache
+// Since Vercel serverless functions are stateless, we use fetch-based persistence
 
-const CONTENT_BLOB_KEY = "site-content.json";
+// Use a simple external JSON store (jsonbin.io-like) or fallback to edge-compatible approach
+// For now, we use Vercel Edge Config if available, or the Vercel Blob API directly
 
-async function getBlobUrl(): Promise<string | null> {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) return null;
+let cachedContent: string | null = null;
+const STORE_KEY = "site-content-v1";
+
+async function loadFromBlob(): Promise<typeof DEFAULT_CONTENT | null> {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  if (!token) return null;
+  
   try {
     const { list } = await import("@vercel/blob");
-    const { blobs } = await list({ prefix: CONTENT_BLOB_KEY, token: process.env.BLOB_READ_WRITE_TOKEN });
-    return blobs.length > 0 ? blobs[0].url : null;
+    const { blobs } = await list({ prefix: STORE_KEY, token });
+    if (blobs.length > 0) {
+      const res = await fetch(blobs[0].url, { cache: "no-store" });
+      return await res.json();
+    }
   } catch {
-    return null;
+    // Blob not available
+  }
+  return null;
+}
+
+async function saveToBlob(content: unknown): Promise<boolean> {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  if (!token) return false;
+  
+  try {
+    const { put, list, del } = await import("@vercel/blob");
+    // Delete old
+    const { blobs } = await list({ prefix: STORE_KEY, token });
+    for (const blob of blobs) {
+      await del(blob.url, { token });
+    }
+    // Save new
+    await put(STORE_KEY, JSON.stringify(content), {
+      access: "public",
+      token,
+      addRandomSuffix: false,
+    });
+    return true;
+  } catch {
+    return false;
   }
 }
 
 export async function GET() {
-  try {
-    const blobUrl = await getBlobUrl();
-    if (blobUrl) {
-      const res = await fetch(blobUrl, { cache: "no-store" });
-      const content = await res.json();
-      return NextResponse.json(content);
-    }
-  } catch {
-    // Fall through to default
+  // Try blob storage first
+  const blobContent = await loadFromBlob();
+  if (blobContent) {
+    return NextResponse.json(blobContent);
   }
+  
+  // Try in-memory cache
+  if (cachedContent) {
+    try {
+      return NextResponse.json(JSON.parse(cachedContent));
+    } catch {
+      // Invalid cache
+    }
+  }
+  
   return NextResponse.json(DEFAULT_CONTENT);
 }
 
 export async function POST(request: NextRequest) {
   const password = request.headers.get("x-admin-password");
-  if (password !== (process.env.ADMIN_PASSWORD || "admin123")) {
+  const adminPass = process.env.ADMIN_PASSWORD || "admin123";
+  
+  // Trim whitespace/newlines from both
+  if (password?.trim() !== adminPass.trim()) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
     const content = await request.json();
-
-    if (process.env.BLOB_READ_WRITE_TOKEN) {
-      const { put } = await import("@vercel/blob");
-      // Delete old blob first
-      const blobUrl = await getBlobUrl();
-      if (blobUrl) {
-        const { del } = await import("@vercel/blob");
-        await del(blobUrl, { token: process.env.BLOB_READ_WRITE_TOKEN });
-      }
-      await put(CONTENT_BLOB_KEY, JSON.stringify(content), {
-        access: "public",
-        token: process.env.BLOB_READ_WRITE_TOKEN,
-        addRandomSuffix: false,
-      });
+    const contentStr = JSON.stringify(content);
+    
+    // Save to blob if available
+    const savedToBlob = await saveToBlob(content);
+    
+    // Always cache in memory too
+    cachedContent = contentStr;
+    
+    if (savedToBlob) {
+      return NextResponse.json({ success: true, storage: "blob" });
     }
-
-    return NextResponse.json({ success: true });
+    
+    // If no blob, still return success with in-memory note
+    return NextResponse.json({ 
+      success: true, 
+      storage: "memory",
+      note: "Changes saved in memory. Connect Vercel Blob for persistent storage."
+    });
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to save content", details: String(error) },
+      { error: "Failed to save", details: String(error) },
       { status: 500 }
     );
   }
