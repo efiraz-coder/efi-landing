@@ -3,56 +3,31 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, ChevronRight, ChevronLeft, Quote } from "lucide-react";
-
-const TESTIMONIALS = [
-  {
-    name: "דנה כהן",
-    role: "מנהלת שיווק",
-    text: "האימון עם אפי שינה לי את החיים. הגעתי בתקופה קשה וכיום אני בתפקיד בכיר עם ביטחון עצמי שלא הכרתי. המתודולוגיה שלו פשוט עובדת.",
-    stars: 5,
-  },
-  {
-    name: "יוסי לוי",
-    role: "בעל עסק",
-    text: "תוך 6 חודשים של ליווי עסקי, הכפלתי את ההכנסות. אפי עזר לי לראות את העסק מזווית חדשה ולבנות אסטרטגיה שעובדת.",
-    stars: 5,
-  },
-  {
-    name: "מירב שרון",
-    role: "עצמאית",
-    text: "היעוץ הכלכלי של אפי שם סדר בכסף שלי. לראשונה בחיים יש לי תוכנית פיננסית ברורה, חיסכון, וראש שקט.",
-    stars: 5,
-  },
-  {
-    name: "אבי גולדברג",
-    role: "יזם סטארטאפ",
-    text: "אפי ליווה אותי מרעיון ועד להשקה מוצלחת. השילוב בין הבנה פסיכולוגית לתבונה עסקית הפך את הכל לאפשרי. ממליץ בחום.",
-    stars: 5,
-  },
-];
+import { useContent } from "@/lib/ContentContext";
 
 export default function Testimonials() {
+  const { testimonials } = useContent();
   const [current, setCurrent] = useState(0);
+  const items = testimonials.items;
 
   const next = useCallback(
-    () => setCurrent((prev) => (prev + 1) % TESTIMONIALS.length),
-    []
+    () => setCurrent((prev) => (prev + 1) % items.length),
+    [items.length]
   );
   const prev = useCallback(
-    () =>
-      setCurrent(
-        (prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length
-      ),
-    []
+    () => setCurrent((prev) => (prev - 1 + items.length) % items.length),
+    [items.length]
   );
 
-  // Auto-play
   useEffect(() => {
+    if (items.length === 0) return;
     const timer = setInterval(next, 5000);
     return () => clearInterval(timer);
-  }, [next]);
+  }, [next, items.length]);
 
-  const testimonial = TESTIMONIALS[current];
+  if (items.length === 0) return null;
+
+  const testimonial = items[current];
 
   return (
     <section id="testimonials" className="section-padding bg-[var(--muted)]">
@@ -64,7 +39,7 @@ export default function Testimonials() {
             viewport={{ once: true }}
             className="inline-block px-4 py-1.5 rounded-full bg-brand-blue/10 text-brand-blue text-sm font-medium mb-4"
           >
-            המלצות
+            {testimonials.badge}
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -73,7 +48,7 @@ export default function Testimonials() {
             transition={{ delay: 0.1 }}
             className="text-3xl md:text-4xl font-bold text-[var(--foreground)]"
           >
-            מה אומרים הלקוחות
+            {testimonials.title}
           </motion.h2>
         </div>
 
@@ -115,7 +90,6 @@ export default function Testimonials() {
             </AnimatePresence>
           </div>
 
-          {/* Navigation */}
           <div className="flex items-center justify-center gap-4 mt-8">
             <button
               onClick={prev}
@@ -125,7 +99,7 @@ export default function Testimonials() {
             </button>
 
             <div className="flex gap-2">
-              {TESTIMONIALS.map((_, i) => (
+              {items.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}

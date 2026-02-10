@@ -2,29 +2,21 @@
 
 import { motion } from "framer-motion";
 import { Brain, Briefcase, PiggyBank } from "lucide-react";
+import { useContent } from "@/lib/ContentContext";
 
-const SERVICES = [
+const SERVICE_STYLES = [
   {
     icon: Brain,
-    title: "אימון פסיכולוגי",
-    description:
-      "ליווי אישי לפיתוח חוסן נפשי, ניהול רגשות, התמודדות עם חרדות ובניית ביטחון עצמי. שיטות מבוססות מחקר להעצמה אישית.",
     color: "from-blue-500 to-indigo-600",
     bgLight: "bg-blue-50 dark:bg-blue-950/30",
   },
   {
     icon: Briefcase,
-    title: "אימון עסקי",
-    description:
-      "בניית אסטרטגיה עסקית, פיתוח מנהיגות, שיפור ביצועים ויצירת תהליכי צמיחה. מהרעיון ועד ההגשמה.",
     color: "from-brand-gold to-amber-600",
     bgLight: "bg-amber-50 dark:bg-amber-950/30",
   },
   {
     icon: PiggyBank,
-    title: "יעוץ כלכלי",
-    description:
-      "תכנון פיננסי אישי ועסקי, ניהול תקציב, השקעות חכמות ובניית עתיד כלכלי יציב ובטוח.",
     color: "from-emerald-500 to-teal-600",
     bgLight: "bg-emerald-50 dark:bg-emerald-950/30",
   },
@@ -32,21 +24,17 @@ const SERVICES = [
 
 const containerVariants = {
   hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.15 },
-  },
+  visible: { transition: { staggerChildren: 0.15 } },
 };
 
 const cardVariants = {
   hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
-  },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
 
 export default function Services() {
+  const { services } = useContent();
+
   return (
     <section id="services" className="section-padding">
       <div className="max-w-7xl mx-auto">
@@ -57,7 +45,7 @@ export default function Services() {
             viewport={{ once: true }}
             className="inline-block px-4 py-1.5 rounded-full bg-brand-gold/10 text-brand-gold-dark dark:text-brand-gold text-sm font-medium mb-4"
           >
-            השירותים שלי
+            {services.badge}
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -66,7 +54,7 @@ export default function Services() {
             transition={{ delay: 0.1 }}
             className="text-3xl md:text-4xl font-bold text-[var(--foreground)]"
           >
-            איך אני יכול לעזור לך?
+            {services.title}
           </motion.h2>
         </div>
 
@@ -77,38 +65,41 @@ export default function Services() {
           viewport={{ once: true, margin: "-80px" }}
           className="grid md:grid-cols-3 gap-6 lg:gap-8"
         >
-          {SERVICES.map((service) => (
-            <motion.div
-              key={service.title}
-              variants={cardVariants}
-              whileHover={{ y: -8, scale: 1.02 }}
-              className={`group relative rounded-3xl p-8 ${service.bgLight} border border-[var(--border)] hover:shadow-glass-lg transition-all duration-300 cursor-default`}
-            >
-              {/* Icon */}
-              <div
-                className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${service.color} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}
+          {services.items.map((service, i) => {
+            const style = SERVICE_STYLES[i] || SERVICE_STYLES[0];
+            const Icon = style.icon;
+            return (
+              <motion.div
+                key={i}
+                variants={cardVariants}
+                whileHover={{ y: -8, scale: 1.02 }}
+                className={`group relative rounded-3xl p-8 ${style.bgLight} border border-[var(--border)] hover:shadow-glass-lg transition-all duration-300 cursor-default`}
               >
-                <service.icon className="w-7 h-7 text-white" />
-              </div>
+                <div
+                  className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${style.color} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                >
+                  <Icon className="w-7 h-7 text-white" />
+                </div>
 
-              <h3 className="text-xl font-bold mb-3 text-[var(--foreground)]">
-                {service.title}
-              </h3>
-              <p className="text-[var(--muted-foreground)] leading-relaxed text-sm">
-                {service.description}
-              </p>
+                <h3 className="text-xl font-bold mb-3 text-[var(--foreground)]">
+                  {service.title}
+                </h3>
+                <p className="text-[var(--muted-foreground)] leading-relaxed text-sm">
+                  {service.description}
+                </p>
 
-              <a
-                href="#contact"
-                className="inline-flex items-center mt-6 text-sm font-semibold text-brand-blue hover:text-brand-blue-dark transition-colors"
-              >
-                למידע נוסף
-                <span className="mr-2 group-hover:translate-x-[-4px] transition-transform">
-                  &larr;
-                </span>
-              </a>
-            </motion.div>
-          ))}
+                <a
+                  href="#contact"
+                  className="inline-flex items-center mt-6 text-sm font-semibold text-brand-blue hover:text-brand-blue-dark transition-colors"
+                >
+                  למידע נוסף
+                  <span className="mr-2 group-hover:translate-x-[-4px] transition-transform">
+                    &larr;
+                  </span>
+                </a>
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
     </section>

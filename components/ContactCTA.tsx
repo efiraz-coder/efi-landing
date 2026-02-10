@@ -3,8 +3,10 @@
 import { useState, FormEvent } from "react";
 import { motion } from "framer-motion";
 import { Send, CheckCircle2, AlertCircle, Calendar } from "lucide-react";
+import { useContent } from "@/lib/ContentContext";
 
 export default function ContactCTA() {
+  const { contact } = useContent();
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
@@ -13,7 +15,6 @@ export default function ContactCTA() {
     setStatus("sending");
 
     try {
-      // EmailJS integration - replace with your service/template/public key
       const emailjs = await import("@emailjs/browser");
       await emailjs.send(
         "YOUR_SERVICE_ID",
@@ -45,7 +46,7 @@ export default function ContactCTA() {
             viewport={{ once: true }}
             className="inline-block px-4 py-1.5 rounded-full bg-brand-gold/10 text-brand-gold-dark dark:text-brand-gold text-sm font-medium mb-4"
           >
-            צור קשר
+            {contact.badge}
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -54,7 +55,7 @@ export default function ContactCTA() {
             transition={{ delay: 0.1 }}
             className="text-3xl md:text-4xl font-bold text-[var(--foreground)]"
           >
-            בואו נתחיל את המסע שלך
+            {contact.title}
           </motion.h2>
         </div>
 
@@ -68,7 +69,7 @@ export default function ContactCTA() {
             className="bg-[var(--card)] rounded-3xl p-8 shadow-glass border border-[var(--border)]"
           >
             <h3 className="text-xl font-bold mb-6 text-[var(--foreground)]">
-              שלח הודעה
+              {contact.formTitle}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -168,15 +169,14 @@ export default function ContactCTA() {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-[var(--foreground)]">
-                  קבע פגישה
+                  {contact.calTitle}
                 </h3>
                 <p className="text-sm text-[var(--muted-foreground)]">
-                  בחר תאריך ושעה נוחים
+                  {contact.calSubtitle}
                 </p>
               </div>
             </div>
 
-            {/* Cal.com embed placeholder */}
             <div className="flex-1 rounded-2xl bg-[var(--muted)] border border-[var(--border)] min-h-[400px] flex items-center justify-center">
               <div className="text-center p-8">
                 <Calendar className="w-16 h-16 text-[var(--muted-foreground)]/30 mx-auto mb-4" />
@@ -186,10 +186,6 @@ export default function ContactCTA() {
                 <p className="text-xs text-[var(--muted-foreground)]/60">
                   הוסף את ה-embed code של Cal.com כדי לאפשר קביעת פגישות
                 </p>
-                {/* 
-                  Replace this div with Cal.com embed:
-                  <iframe src="https://cal.com/YOUR_USERNAME" ... />
-                */}
               </div>
             </div>
           </motion.div>
